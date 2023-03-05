@@ -1,0 +1,55 @@
+config BR2_PACKAGE_DGPRESCUE
+	bool "dgprescue"
+
+if BR2_PACKAGE_DGPRESCUE
+
+# Options for the "rescue interface"
+
+config BR2_PACKAGE_DGPRESCUE_HAVE_ETH_RESCUE
+	bool "Rescue over ethernet"
+	help
+	  "Do you have/want to be able to rescue the system over ethernet?"
+
+if BR2_PACKAGE_DGPRESCUE_HAVE_ETH_RESCUE
+
+config BR2_PACKAGE_DGPRESCUE_HAVE_STATIC_ETH
+	bool "Rescue over ethernet with static address"
+	help
+	  Do you have an ethernet interface that can be used for rescue
+	  and needs a static ip?
+
+	  This is useful for stuff like a usb ethernet gadget that connects
+	  to a single peer and doesn't need DHCP etc.
+
+if BR2_PACKAGE_DGPRESCUE_HAVE_STATIC_ETH
+
+config BR2_PACKAGE_DGPRESCUE_STATIC_ETH_INTERFACE
+	string "Name of the interface"
+	default "usb0"
+
+config BR2_PACKAGE_DGPRESCUE_STATIC_ETH_ADDRV4
+	string "IPv4 address and prefix"
+	default "192.168.69.1/64"
+
+endif # static-eth
+
+config BR2_PACKAGE_DGPRESCUE_HAVE_DYNAMIC_ETH
+	bool "Rescue over ethernet with dynamic address"
+	help
+	  "Do you have and ethernet interface that needs to be configured dynamically i.e. DHCP?"
+
+endif # eth-rescue
+
+choice
+	prompt "Target media type"
+
+config BR2_PACKAGE_DGPRESCUE_TARGETMEDIA_UBI
+	bool "ubi"
+
+endchoice
+
+if BR2_PACKAGE_DGPRESCUE_TARGETMEDIA_UBI
+
+endif # targetmedia-ubi
+
+endif # dgprescue

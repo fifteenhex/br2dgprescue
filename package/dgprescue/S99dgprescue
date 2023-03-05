@@ -2,9 +2,15 @@
 #
 
 start() {
+	echo -n "Starting rescue interfaces... "
+	ifup -i /etc/dgprescue/interfaces -a
+	echo "Done"
 }
 
 stop() {
+	echo -n "Stopping rescue interfaces... "
+	ifdown -i /etc/dgprescue/interfaces -a
+	echo "Done"
 }
 
 case "$1" in
@@ -14,10 +20,8 @@ case "$1" in
   stop)
 	stop
 	;;
-  restart|reload)
-	;;
   *)
-	echo "Usage: $0 {start|stop|restart}"
+	echo "Usage: $0 {start|stop}"
 	exit 1
 esac
 

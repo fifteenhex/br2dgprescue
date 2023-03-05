@@ -1,5 +1,6 @@
 config BR2_PACKAGE_DGPRESCUE
 	bool "dgprescue"
+	depends on BR2_PACKAGE_SKELETON_INIT_SYSV
 
 if BR2_PACKAGE_DGPRESCUE
 
@@ -29,7 +30,7 @@ config BR2_PACKAGE_DGPRESCUE_STATIC_ETH_INTERFACE
 
 config BR2_PACKAGE_DGPRESCUE_STATIC_ETH_ADDRV4
 	string "IPv4 address and prefix"
-	default "192.168.69.1/64"
+	default "192.168.69.1/24"
 
 endif # static-eth
 

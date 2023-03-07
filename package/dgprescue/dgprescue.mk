@@ -27,12 +27,27 @@ endif # static eth
 
 #DGPRESCUE_TARGET_FINALIZE_HOOKS += DGPRESCUE_STATIC_ETH_CONFIG
 
-define DGPRESCUE_INSTALL_INIT_SYSV
-	$(INSTALL) -m 0755 -D $(@D)/S99dgprescue $(TARGET_DIR)/etc/init.d/S99dgprescue
+# eth sysv install
+ifeq ($(BR2_PACKAGE_DGPRESCUE_HAVE_ETH_RESCUE),y)
+define DGPRESCUE_INSTALL_INIT_SYSV_ETH
+	$(INSTALL) -m 0755 -D $(@D)/S99dgprescue_eth $(TARGET_DIR)/etc/init.d/S99dgprescue_eth
 	mkdir -p $(TARGET_DIR)/etc/dgprescue/
 	touch $(@D)/rescue-interfaces
 	$(DGPRESCUE_STATIC_ETH_CONFIG)
 	cp $(@D)/rescue-interfaces $(TARGET_DIR)/etc/dgprescue/interfaces
+endef
+endif
+
+# mtp sysv install
+ifeq ($(BR2_PACKAGE_DGPRESCUE_HAVE_MTP_RESCUE),y)
+define DGPRESCUE_INSTALL_INIT_SYSV_MTP
+	$(INSTALL) -m 0755 -D $(@D)/S99dgprescue_mtp $(TARGET_DIR)/etc/init.d/S99dgprescue_mtp
+endef
+endif
+
+define DGPRESCUE_INSTALL_INIT_SYSV
+	$(DGPRESCUE_INSTALL_INIT_SYSV_ETH)
+	$(DGPRESCUE_INSTALL_INIT_SYSV_MTP)
 endef
 
 $(eval $(generic-package))

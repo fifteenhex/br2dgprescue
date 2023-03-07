@@ -1,0 +1,44 @@
+#!/bin/sh
+#
+
+UMTPRD_DAEMON_NAME=uMTPrd
+UMTPRD_DAEMON_PATH=/usr/sbin/umtprd
+UMTPRD_DAEMON_PID=/var/run/umtprd.pid
+
+start() {
+	echo -n "Starting rescue MTP gadget... "
+	gt load -o --file /etc/gadget-tool/mtp mtp
+	mkdir -p /run/umtprd/ffs-mtp
+	mount -t functionfs mtp /run/umtprd/ffs-mtp/
+
+	# Create a 32MB tmpfs
+	mkdir -p /run/dgprescue/fw/
+	mount -t tmpfs -osize=33816576 fw /run/dgprescue/fw/
+
+	start-stop-daemon -S --background --name $UMTPRD_DAEMON_NAME \
+					  -p $UMTPRD_DAEMON_PID -m \
+					  --exec /bin/sh -- -c \
+					  "$UMTPRD_DAEMON_PATH | logger"
+	sleep 10
+	echo musb-hdrc.0.auto > /sys/kernel/config/usb_gadget/mtp/UDC
+	echo "Done"
+}
+
+stop() {
+	echo -n "Stopping rescue MTP gadget... "
+	echo "Done"
+}
+
+case "$1" in
+  start)
+  	start
+	;;
+  stop)
+	stop
+	;;
+  *)
+	echo "Usage: $0 {start|stop}"
+	exit 1
+esac
+
+exit $?

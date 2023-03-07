@@ -4,8 +4,7 @@ config BR2_PACKAGE_DGPRESCUE
 
 if BR2_PACKAGE_DGPRESCUE
 
-# Options for the "rescue interface"
-
+# Rescue over ethernet
 config BR2_PACKAGE_DGPRESCUE_HAVE_ETH_RESCUE
 	bool "Rescue over ethernet"
 	help
@@ -40,6 +39,15 @@ config BR2_PACKAGE_DGPRESCUE_HAVE_DYNAMIC_ETH
 	  "Do you have and ethernet interface that needs to be configured dynamically i.e. DHCP?"
 
 endif # eth-rescue
+
+# Rescue over MTP
+config BR2_PACKAGE_DGPRESCUE_HAVE_MTP_RESCUE
+	bool "Rescue over MTP"
+	select BR2_PACKAGE_UMTPRD
+	select BR2_PACKAGE_GT
+	select BR2_PACKAGE_INOTIFY_TOOLS
+	help
+	  "Do you have/want to be able to rescue the system over USB via MTP?"
 
 choice
 	prompt "Target media type"

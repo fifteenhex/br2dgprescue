@@ -11,9 +11,17 @@ start() {
 	mkdir -p /run/umtprd/ffs-mtp
 	mount -t functionfs mtp /run/umtprd/ffs-mtp/
 
+	# Create cmd directory
+	mkdir -p /run/dgprescue/cmd/
+
 	# Create a 32MB tmpfs
 	mkdir -p /run/dgprescue/fw/
 	mount -t tmpfs -osize=33816576 fw /run/dgprescue/fw/
+	# Populate volumes
+	for VOL in /sys/class/ubi/ubi0_*; do
+		VOLNAME=`cat $VOL/name`
+		mkdir /run/dgprescue/fw/$VOLNAME
+	done
 
 	start-stop-daemon -S --background --name $UMTPRD_DAEMON_NAME \
 					  -p $UMTPRD_DAEMON_PID -m \

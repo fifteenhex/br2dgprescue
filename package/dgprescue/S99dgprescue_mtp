@@ -9,6 +9,10 @@ DGPRMTPFW_DAEMON_NAME=dgprescue_mtp_fw
 DGPRMTPFW_DAEMON_PATH=/usr/sbin/dgprescue_mtp_fw.sh
 DGPRMTPFW_DAEMON_PID=/var/run/dgprescue_mtp_fw.pid
 
+DGPRMTPCMD_DAEMON_NAME=dgprescue_mtp_cmd
+DGPRMTPCMD_DAEMON_PATH=/usr/sbin/dgprescue_mtp_cmd.sh
+DGPRMTPCMD_DAEMON_PID=/var/run/dgprescue_mtp_cmd.pid
+
 start() {
 	echo -n "Starting rescue MTP gadget... "
 	gt load -o --file /etc/gadget-tool/mtp mtp
@@ -27,19 +31,27 @@ start() {
 		mkdir /run/dgprescue/fw/$VOLNAME
 	done
 
-	start-stop-daemon -S --background --name $UMTPRD_DAEMON_NAME \
-					  -p $UMTPRD_DAEMON_PID -m \
-					  --exec /bin/sh -- -c \
-					  "$UMTPRD_DAEMON_PATH | logger"
+	start-stop-daemon -S --background \
+			  --name $UMTPRD_DAEMON_NAME \
+			  -p $UMTPRD_DAEMON_PID -m \
+			  --exec /bin/sh -- -c \
+			  "$UMTPRD_DAEMON_PATH | logger"
+
 	sleep 5
 	echo musb-hdrc.0.auto > /sys/kernel/config/usb_gadget/mtp/UDC
-
-
 	sleep 5
-	start-stop-daemon -S --background --name $DGPRMTPFW_DAEMON_NAME \
-                                          -p $DGPRMTPFW_DAEMON_PID -m \
-                                          --exec /bin/sh -- -c \
-                                          "$DGPRMTPFW_DAEMON_PATH | logger"
+
+	start-stop-daemon -S --background \
+			  --name $DGPRMTPFW_DAEMON_NAME \
+			  -p $DGPRMTPFW_DAEMON_PID -m \
+			  --exec /bin/sh -- -c \
+			  "$DGPRMTPFW_DAEMON_PATH | logger"
+
+	start-stop-daemon -S --background \
+			  --name $DGPRMTPCMD_DAEMON_NAME \
+			  -p $DGPRMTPCMD_DAEMON_PID -m \
+			  --exec /bin/sh -- -c \
+			  "$DGPRMTPCMD_DAEMON_PATH | logger"
 
 	echo "Done"
 }

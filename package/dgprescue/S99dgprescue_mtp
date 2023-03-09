@@ -5,6 +5,10 @@ UMTPRD_DAEMON_NAME=uMTPrd
 UMTPRD_DAEMON_PATH=/usr/sbin/umtprd
 UMTPRD_DAEMON_PID=/var/run/umtprd.pid
 
+DGPRMTPFW_DAEMON_NAME=dgprescue_mtp_fw
+DGPRMTPFW_DAEMON_PATH=/usr/sbin/dgprescue_mtp_fw.sh
+DGPRMTPFW_DAEMON_PID=/var/run/dgprescue_mtp_fw.pid
+
 start() {
 	echo -n "Starting rescue MTP gadget... "
 	gt load -o --file /etc/gadget-tool/mtp mtp
@@ -27,8 +31,16 @@ start() {
 					  -p $UMTPRD_DAEMON_PID -m \
 					  --exec /bin/sh -- -c \
 					  "$UMTPRD_DAEMON_PATH | logger"
-	sleep 10
+	sleep 5
 	echo musb-hdrc.0.auto > /sys/kernel/config/usb_gadget/mtp/UDC
+
+
+	sleep 5
+	start-stop-daemon -S --background --name $DGPRMTPFW_DAEMON_NAME \
+                                          -p $DGPRMTPFW_DAEMON_PID -m \
+                                          --exec /bin/sh -- -c \
+                                          "$DGPRMTPFW_DAEMON_PATH | logger"
+
 	echo "Done"
 }
 

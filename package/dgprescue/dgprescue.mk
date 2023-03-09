@@ -45,7 +45,7 @@ define DGPRESCUE_INSTALL_INIT_SYSV_MTP
 endef
 
 define DGPRESCUE_INSTALL_TARGET_CMDS_MTP
-	 $(INSTALL) -m 0755 -D $(@D)/dgprescue_mtp.sh $(TARGET_DIR)/usr/sbin/dgprescue_mtp.sh
+	 $(INSTALL) -m 0755 -D $(@D)/dgprescue_mtp_fw.sh $(TARGET_DIR)/usr/sbin/dgprescue_mtp_fw.sh
 endef
 endif
 
